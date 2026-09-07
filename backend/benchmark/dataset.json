@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "notes": [
+    "Ground truth was transcribed by reading each image directly, NOT by running",
+    "the pipeline — using the system's own output as its answer key would make",
+    "every metric meaningless.",
+    "",
+    "`aliases` lists names that are clinically the same drug. A prediction that",
+    "returns the generic where the paper says the brand (Brufen -> Ibuprofen) is",
+    "scored as `name_acceptable` but not `name_exact`, so the two read apart.",
+    "",
+    "`frequency_alt` / `duration_alt` list other defensible readings of an",
+    "ambiguous instruction, so the benchmark does not punish a correct answer",
+    "that the transcriber happened to phrase differently.",
+    "",
+    "`expected_interactions` are the clinically dangerous pairs actually present",
+    "in the prescription. An empty list is a real test: any flag raised on that",
+    "case is a false positive."
+  ],
+  "cases": [
+    {
+      "id": "rx-001-lahore",
+      "image": "test-assets/prescription-sample-1.png",
+      "source": "Dr. Ahmed Khan, MBBS — City Medical Center, Lahore",
+      "transcription": "Panadol 500mg - 1 tab TDS x 5 days / Augmentin 625mg - 1 tab BD x 7 days / Brufen 400mg - 1 tab BD after meals x 3 days",
+      "medicines": [
+        {
+          "name": "Panadol",
+          "aliases": ["Paracetamol", "Acetaminophen"],
+          "dosage": "500mg",
+          "frequency": "three times a day",
+          "duration": "5 days"
+        },
+        {
+          "name": "Augmentin",
+          "aliases": ["Co-amoxiclav", "Amoxicillin Clavulanate", "Amoxicillin Clavulanic Acid"],
+          "dosage": "625mg",
+          "frequency": "twice a day",
+          "duration": "7 days"
+        },
+        {
+          "name": "Brufen",
+          "aliases": ["Ibuprofen"],
+          "dosage": "400mg",
+          "frequency": "twice a day",
+          "duration": "3 days"
+        }
+      ],
+      "expected_interactions": []
+    },
+    {
+      "id": "rx-002-karachi",
+      "image": "test-assets/prescription-sample-2.png",
+      "source": "Dr. Sara Malik — Shifa Clinic, Karachi",
+      "transcription": "Amoxicillin 500mg - TDS x 7 days / Metformin 500mg - OD / Aspirin 75mg - OD / Ibuprofen 400mg - BD as needed",
+      "medicines": [
+        {
+          "name": "Amoxicillin",
+          "aliases": ["Amoxil"],
+          "dosage": "500mg",
+          "frequency": "three times a day",
+          "duration": "7 days"
+        },
+        {
+          "name": "Metformin",
+          "aliases": ["Glucophage"],
+          "dosage": "500mg",
+          "frequency": "once a day",
+          "duration": null
+        },
+        {
+          "name": "Aspirin",
+          "aliases": ["Disprin", "Acetylsalicylic Acid"],
+          "dosage": "75mg",
+          "frequency": "once a day",
+          "duration": null
+        },
+        {
+          "name": "Ibuprofen",
+          "aliases": ["Brufen"],
+          "dosage": "400mg",
+          "frequency": "twice a day",
+          "frequency_alt": ["as needed", "twice a day as needed"],
+          "duration": null
+        }
+      ],
+      "expected_interactions": [["Aspirin", "Ibuprofen"]]
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "generated_at": "2026-09-05T13:08:42.485Z",
+  "dataset_cases": 2,
+  "cases_run": 2,
+  "runs": 1,
+  "models": {
+    "ocr": "qwen-vl-plus",
+    "text": "qwen-plus"
+  },
+  "overall": {
+    "cases": 2,
+    "medicines": {
+      "expected": 7,
+      "predicted": 7,
+      "matched": 7,
+      "missed": 0,
+      "invented": 0
+    },
+    "fields": {
+      "name_exact": {
+        "scored": 7,
+        "correct": 7
+      },
+      "name_acceptable": {
+        "scored": 7,
+        "correct": 7
+      },
+      "dosage_correct": {
+        "scored": 7,
+        "correct": 7
+      },
+      "frequency_correct": {
+        "scored": 7,
+        "correct": 7
+      },
+      "duration_correct": {
+        "scored": 7,
+        "correct": 7
+      }
+    },
+    "confidence": {
+      "confident_total": 7,
+      "confident_correct": 7,
+      "confidently_wrong": 0,
+      "uncertain_total": 0,
+      "uncertain_correct": 0,
+      "uncertain_wrong": 0,
+      "invented_as_confident": 0
+    },
+    "interactions": {
+      "expected": 1,
+      "predicted": 1,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0
+    },
+    "rates": {
+      "capture_rate": 1,
+      "invention_rate": 0,
+      "name_exact": 1,
+      "name_acceptable": 1,
+      "dosage_correct": 1,
+      "frequency_correct": 1,
+      "duration_correct": 1,
+      "confidence_precision": 1,
+      "confidently_wrong_rate": 0,
+      "uncertainty_usefulness": null,
+      "interaction_recall": 1,
+      "interaction_precision": 1
+    }
+  },
+  "per_run": [
+    {
+      "cases": 2,
+      "medicines": {
+        "expected": 7,
+        "predicted": 7,
+        "matched": 7,
+        "missed": 0,
+        "invented": 0
+      },
+      "fields": {
+        "name_exact": {
+          "scored": 7,
+          "correct": 7
+        },
+        "name_acceptable": {
+          "scored": 7,
+          "correct": 7
+        },
+        "dosage_correct": {
+          "scored": 7,
+          "correct": 7
+        },
+        "frequency_correct": {
+          "scored": 7,
+          "correct": 7
+        },
+        "duration_correct": {
+          "scored": 7,
+          "correct": 7
+        }
+      },
+      "confidence": {
+        "confident_total": 7,
+        "confident_correct": 7,
+        "confidently_wrong": 0,
+        "uncertain_total": 0,
+        "uncertain_correct": 0,
+        "uncertain_wrong": 0,
+        "invented_as_confident": 0
+      },
+      "interactions": {
+        "expected": 1,
+        "predicted": 1,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0
+      },
+      "rates": {
+        "capture_rate": 1,
+        "invention_rate": 0,
+        "name_exact": 1,
+        "name_acceptable": 1,
+        "dosage_correct": 1,
+        "frequency_correct": 1,
+        "duration_correct": 1,
+        "confidence_precision": 1,
+        "confidently_wrong_rate": 0,
+        "uncertainty_usefulness": null,
+        "interaction_recall": 1,
+        "interaction_precision": 1
+      },
+      "run": 1
+    }
+  ],
+  "case_scores": [
+    {
+      "case_id": "rx-001-lahore",
+      "medicines": {
+        "expected": 3,
+        "predicted": 3,
+        "matched": 3,
+        "missed": 0,
+        "invented": 0,
+        "missed_names": [],
+        "invented_names": []
+      },
+      "fields": {
+        "name_exact": {
+          "scored": 3,
+          "correct": 3
+        },
+        "name_acceptable": {
+          "scored": 3,
+          "correct": 3
+        },
+        "dosage_correct": {
+          "scored": 3,
+          "correct": 3
+        },
+        "frequency_correct": {
+          "scored": 3,
+          "correct": 3
+        },
+        "duration_correct": {
+          "scored": 3,
+          "correct": 3
+        }
+      },
+      "confidence": {
+        "confident_total": 3,
+        "confident_correct": 3,
+        "confidently_wrong": 0,
+        "uncertain_total": 0,
+        "uncertain_correct": 0,
+        "uncertain_wrong": 0,
+        "invented_as_confident": 0
+      },
+      "interactions": {
+        "expected": 0,
+        "predicted": 0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 0,
+        "false_positive_pairs": [],
+        "false_negative_pairs": []
+      },
+      "details": [
+        {
+          "expected": "Panadol",
+          "predicted": "Panadol",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "500mg",
+            "predicted": "500mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "three times a day",
+            "predicted": "three times a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": "5 days",
+            "predicted": "5 days",
+            "correct": true
+          },
+          "fully_correct": true
+        },
+        {
+          "expected": "Augmentin",
+          "predicted": "Augmentin",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "625mg",
+            "predicted": "625mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "twice a day",
+            "predicted": "twice a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": "7 days",
+            "predicted": "7 days",
+            "correct": true
+          },
+          "fully_correct": true
+        },
+        {
+          "expected": "Brufen",
+          "predicted": "Brufen",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "400mg",
+            "predicted": "400mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "twice a day",
+            "predicted": "twice a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": "3 days",
+            "predicted": "3 days",
+            "correct": true
+          },
+          "fully_correct": true
+        }
+      ],
+      "run": 1,
+      "raw_ocr_text": "Dr. Ahmed Khan, MBBS - City Medical Center, Lahore\n\nRx\nPanadol 500mg - 1 tab TDS\nx 5 days\nAugmentin 625mg - 1 tab BD\nx 7 days\nBrufen 400mg - 1 tab BD\nafter meals x 3 days\n\nPatient Name _________\nDate _________",
+      "elapsed_ms": 25700,
+      "urdu_instruction_coverage": "3/3"
+    },
+    {
+      "case_id": "rx-002-karachi",
+      "medicines": {
+        "expected": 4,
+        "predicted": 4,
+        "matched": 4,
+        "missed": 0,
+        "invented": 0,
+        "missed_names": [],
+        "invented_names": []
+      },
+      "fields": {
+        "name_exact": {
+          "scored": 4,
+          "correct": 4
+        },
+        "name_acceptable": {
+          "scored": 4,
+          "correct": 4
+        },
+        "dosage_correct": {
+          "scored": 4,
+          "correct": 4
+        },
+        "frequency_correct": {
+          "scored": 4,
+          "correct": 4
+        },
+        "duration_correct": {
+          "scored": 4,
+          "correct": 4
+        }
+      },
+      "confidence": {
+        "confident_total": 4,
+        "confident_correct": 4,
+        "confidently_wrong": 0,
+        "uncertain_total": 0,
+        "uncertain_correct": 0,
+        "uncertain_wrong": 0,
+        "invented_as_confident": 0
+      },
+      "interactions": {
+        "expected": 1,
+        "predicted": 1,
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "false_positive_pairs": [],
+        "false_negative_pairs": []
+      },
+      "details": [
+        {
+          "expected": "Amoxicillin",
+          "predicted": "Amoxicillin",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "500mg",
+            "predicted": "500mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "three times a day",
+            "predicted": "three times a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": "7 days",
+            "predicted": "7 days",
+            "correct": true
+          },
+          "fully_correct": true
+        },
+        {
+          "expected": "Metformin",
+          "predicted": "Metformin",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "500mg",
+            "predicted": "500mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "once a day",
+            "predicted": "once a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": null,
+            "predicted": null,
+            "correct": true
+          },
+          "fully_correct": true
+        },
+        {
+          "expected": "Aspirin",
+          "predicted": "Aspirin",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "75mg",
+            "predicted": "75mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "once a day",
+            "predicted": "once a day",
+            "correct": true
+          },
+          "duration": {
+            "expected": null,
+            "predicted": null,
+            "correct": true
+          },
+          "fully_correct": true
+        },
+        {
+          "expected": "Ibuprofen",
+          "predicted": "Ibuprofen",
+          "confidence": "confident",
+          "name_exact": true,
+          "name_acceptable": true,
+          "dosage": {
+            "expected": "400mg",
+            "predicted": "400mg",
+            "correct": true
+          },
+          "frequency": {
+            "expected": "twice a day",
+            "predicted": "twice a day as needed",
+            "correct": true
+          },
+          "duration": {
+            "expected": null,
+            "predicted": null,
+            "correct": true
+          },
+          "fully_correct": true
+        }
+      ],
+      "run": 1,
+      "raw_ocr_text": "Dr. Sara Malik - Shifa Clinic, Karachi\n\nRx\nAmoxicillin 500mg - TDS x 7 days\nMetformin 500mg - OD\nAspirin 75mg - OD\nIbuprofen 400mg - BD as needed\n\n[unclear] [unclear]\n[unclear] Aspirin\n[unclear] [unclear]\n[unclear] [unclear] [unclear]\n\n[Signature]",
+      "elapsed_ms": 29662,
+      "urdu_instruction_coverage": "4/4"
+    }
+  ]
+}
