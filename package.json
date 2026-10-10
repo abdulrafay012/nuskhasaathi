@@ -1,0 +1,12 @@
+{
+  "name": "nuskhasaathi",
+  "private": true,
+  "description": "Deployment entry point: builds and starts the backend (used by Railway).",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "cd backend && npm ci",
+    "start": "cd backend && npm run seed && npm start"
+  }
+}

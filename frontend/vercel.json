@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    { "source": "/(history|schedule|caregiver)(.*)", "has": [{ "type": "header", "key": "accept", "value": "(.*)text/html(.*)" }], "destination": "/index.html" },
+    { "source": "/api/:path*", "destination": "https://backend-production-5570.up.railway.app/:path*" },
+    { "source": "/auth/:path*", "destination": "https://backend-production-5570.up.railway.app/auth/:path*" },
+    { "source": "/upload/:path*", "destination": "https://backend-production-5570.up.railway.app/upload/:path*" },
+    { "source": "/identify-medicines/:path*", "destination": "https://backend-production-5570.up.railway.app/identify-medicines/:path*" },
+    { "source": "/instructions/:path*", "destination": "https://backend-production-5570.up.railway.app/instructions/:path*" },
+    { "source": "/history/:path*", "destination": "https://backend-production-5570.up.railway.app/history/:path*" },
+    { "source": "/medicines/:path*", "destination": "https://backend-production-5570.up.railway.app/medicines/:path*" },
+    { "source": "/schedule/:path*", "destination": "https://backend-production-5570.up.railway.app/schedule/:path*" },
+    { "source": "/caregiver/:path*", "destination": "https://backend-production-5570.up.railway.app/caregiver/:path*" },
+    { "source": "/report/:path*", "destination": "https://backend-production-5570.up.railway.app/report/:path*" },
+    { "source": "/uploads/:path*", "destination": "https://backend-production-5570.up.railway.app/uploads/:path*" },
+    { "source": "/test-assets/:path*", "destination": "https://backend-production-5570.up.railway.app/test-assets/:path*" },
+    { "source": "/health/:path*", "destination": "https://backend-production-5570.up.railway.app/health/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

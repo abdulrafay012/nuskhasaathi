@@ -1,0 +1,13 @@
+node_modules/
+**/node_modules/
+.env
+**/.env
+backend/nuskhasaathi.db
+backend/nuskhasaathi.db-shm
+backend/nuskhasaathi.db-wal
+backend/uploads/
+frontend/dist/
+*.png
+!test-assets/*.png
+test-report.pdf
+NuskhaSaathi_Presentation_Guide.html
