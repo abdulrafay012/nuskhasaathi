@@ -30,7 +30,7 @@ export default function Signup({ onLogin }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md border border-teal-100">
+      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg border border-teal-100">
         <div className="text-center mb-8">
           <span className="text-4xl">💊</span>
           <h1 className="text-2xl font-bold text-gray-800 mt-2">NuskhaSaathi</h1>
@@ -46,28 +46,30 @@ export default function Signup({ onLogin }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="Your full name"
-              required
-            />
-          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+                placeholder="Your full name"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-              placeholder="your@email.com"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+                placeholder="your@email.com"
+                required
+              />
+            </div>
           </div>
 
           <div>
