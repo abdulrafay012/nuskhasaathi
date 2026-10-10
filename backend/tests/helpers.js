@@ -228,8 +228,10 @@ function getUserByEmail(email) {
 }
 
 function clearAllTables() {
+  // Child rows first: prescriptions cannot be deleted while a flag still
+  // references them (foreign keys are ON).
   rawDb.exec(
-    'DELETE FROM interaction_flags; DELETE FROM medicines; DELETE FROM prescriptions; DELETE FROM users;'
+    'DELETE FROM allergy_flags; DELETE FROM interaction_flags; DELETE FROM medicines; DELETE FROM prescriptions; DELETE FROM users;'
   );
 }
 

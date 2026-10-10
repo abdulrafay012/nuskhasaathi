@@ -9,10 +9,25 @@ require('dotenv').config();
 
 const router = express.Router();
 
+// Tidies the patient's free-text allergy list into a canonical comma-separated
+// string. An empty or blank-only value is stored as NULL rather than "", so
+// "no allergies recorded" is one state in the database instead of two.
+function normalizeAllergies(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== 'string') return null;
+
+  const entries = value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return entries.length > 0 ? entries.join(', ') : null;
+}
+
 // POST /auth/signup
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password, age } = req.body;
+    const { name, email, password, age, allergies } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Name, email, and password are required.' });
@@ -30,8 +45,8 @@ router.post('/signup', async (req, res) => {
 
     // Insert user
     const result = await pool.query(
-      'INSERT INTO users (id, name, email, password_hash, age) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, age, created_at',
-      [uuidv4(), name, email, passwordHash, age || null]
+      'INSERT INTO users (id, name, email, password_hash, age, allergies) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, age, allergies, created_at',
+      [uuidv4(), name, email, passwordHash, age || null, normalizeAllergies(allergies)]
     );
 
     const user = result.rows[0];
@@ -46,7 +61,13 @@ router.post('/signup', async (req, res) => {
     res.status(201).json({
       message: 'Signup successful',
       token,
-      user: { id: user.id, name: user.name, email: user.email, age: user.age },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        allergies: user.allergies,
+      },
     });
   } catch (err) {
     console.error('Signup error:', err);
@@ -110,6 +131,54 @@ router.get('/me', verifyToken, async (req, res) => {
     res.json({ user: result.rows[0] });
   } catch (err) {
     console.error('Get user error:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// GET /auth/profile — the patient's own details, including their allergy list.
+router.get('/profile', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, name, email, age, allergies, created_at FROM users WHERE id = $1',
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.json({ user: result.rows[0] });
+  } catch (err) {
+    console.error('Get profile error:', err);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// PATCH /auth/profile — update the allergy list. Sending an empty string (or
+// null) clears it, which is how a patient says "actually, I have none".
+router.patch('/profile', verifyToken, async (req, res) => {
+  try {
+    if (!('allergies' in (req.body || {}))) {
+      return res.status(400).json({ error: 'Nothing to update.' });
+    }
+
+    const { allergies } = req.body;
+    if (allergies !== null && typeof allergies !== 'string') {
+      return res.status(400).json({ error: 'Allergies must be text, separated by commas.' });
+    }
+
+    const result = await pool.query(
+      'UPDATE users SET allergies = $1 WHERE id = $2 RETURNING id, name, email, age, allergies, created_at',
+      [normalizeAllergies(allergies), req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.json({ message: 'Profile updated', user: result.rows[0] });
+  } catch (err) {
+    console.error('Update profile error:', err);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });

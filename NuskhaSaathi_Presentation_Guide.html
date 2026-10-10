@@ -1,0 +1,626 @@
+<title>NuskhaSaathi Pitch Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Noto+Nastaliq+Urdu:wght@500&display=swap">
+<style>
+/* Layout: a single reading column styled like a pharmacy slip. Every block is bilingual: Roman Urdu first (primary ink), English underneath (muted, tagged EN). Semantic colors match the app: amber = uncertain, red = interaction, violet = allergy. */
+:root {
+  --paper: #f6f8f6;
+  --surface: #ffffff;
+  --ink: #15211d;
+  --ink-soft: #55655f;
+  --rule: #d5dfda;
+  --accent: #0d6b55;
+  --accent-soft: #e2f1ec;
+  --amber: #a15c00;
+  --amber-soft: #fdf1dc;
+  --red: #b42318;
+  --red-soft: #fde8e6;
+  --violet: #6b3fb8;
+  --violet-soft: #efe8fb;
+
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+  --f-urdu: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", serif;
+
+  --s-xs: .8125rem; --s-sm: .9375rem; --s-md: 1.0625rem; --s-lg: 1.375rem; --s-xl: 1.875rem; --s-xxl: 2.75rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0f1513; --surface: #17201d; --ink: #e4ece8; --ink-soft: #9fb0a9; --rule: #2a3632;
+    --accent: #4fc7a6; --accent-soft: #163029;
+    --amber: #f0b45a; --amber-soft: #2f2412;
+    --red: #f2877c; --red-soft: #33191a;
+    --violet: #b89af0; --violet-soft: #251d36;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0f1513; --surface: #17201d; --ink: #e4ece8; --ink-soft: #9fb0a9; --rule: #2a3632;
+  --accent: #4fc7a6; --accent-soft: #163029;
+  --amber: #f0b45a; --amber-soft: #2f2412;
+  --red: #f2877c; --red-soft: #33191a;
+  --violet: #b89af0; --violet-soft: #251d36;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--s-md);
+  line-height: 1.6;
+  padding-inline: 20px;
+  padding-block: 0 72px;
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+.prose { max-width: 68ch; display: grid; gap: 16px; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: var(--s-xl); font-weight: 700; }
+h3 { font-size: var(--s-lg); font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--f-mono); font-size: .88em; }
+.label {
+  font-family: var(--f-mono); font-size: var(--s-xs); text-transform: uppercase;
+  letter-spacing: .08em; color: var(--ink-soft);
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Bilingual pair: Roman Urdu on top, English below */
+.bi { display: grid; gap: 4px; }
+.en {
+  color: var(--ink-soft);
+  font-size: .9em;
+  line-height: 1.5;
+  padding-left: 30px;
+  position: relative;
+}
+.en::before {
+  content: "EN";
+  position: absolute; left: 0; top: .2em;
+  font-family: var(--f-mono); font-size: .68rem; font-weight: 600; letter-spacing: .06em;
+  color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 3px; padding: 0 4px; line-height: 1.5;
+}
+h2 + .en, .h-en { font-family: var(--f-body); font-size: var(--s-md); font-weight: 400; }
+
+/* Language key */
+.key { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: var(--s-sm); color: var(--ink-soft); }
+.key b { color: var(--ink); }
+
+/* Header */
+header.top {
+  padding-block: 56px 32px;
+  border-bottom: 2px solid var(--ink);
+  display: grid; gap: 18px;
+}
+.brand { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.brand h1 { font-size: var(--s-xxl); font-weight: 700; letter-spacing: -.01em; }
+.brand .ur { font-family: var(--f-urdu); font-size: 1.6rem; color: var(--accent); line-height: 2; }
+.lede { font-size: var(--s-lg); line-height: 1.45; max-width: 44ch; }
+
+.facts {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  border: 1px solid var(--rule); background: var(--surface); margin-top: 8px;
+}
+.fact { padding: 14px 16px; border-right: 1px solid var(--rule); display: grid; gap: 2px; }
+.fact:last-child { border-right: 0; }
+.fact b { font-family: var(--f-display); font-size: var(--s-xl); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.fact span { font-size: var(--s-sm); }
+.fact small { font-size: var(--s-xs); color: var(--ink-soft); }
+@media (max-width: 620px) {
+  .facts { grid-template-columns: repeat(2, 1fr); }
+  .fact:nth-child(2) { border-right: 0; }
+  .fact:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+}
+
+/* TOC */
+nav.toc { padding-block: 20px; border-bottom: 1px solid var(--rule); }
+nav.toc ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: var(--s-sm); }
+nav.toc a { text-decoration: none; color: var(--ink-soft); }
+nav.toc a:hover { color: var(--accent); }
+nav.toc span { font-family: var(--f-mono); color: var(--accent); margin-right: 4px; }
+
+/* Sections */
+section { padding-block: 48px 8px; display: grid; gap: 22px; }
+.sec-head { display: grid; gap: 6px; }
+.sec-head .label { color: var(--accent); }
+
+/* Shorthand decoder */
+.decoder { border: 1px solid var(--rule); background: var(--surface); overflow-x: auto; }
+.decoder table { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.decoder th, .decoder td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+.decoder tr:last-child td { border-bottom: 0; }
+.decoder th { font-family: var(--f-mono); font-weight: 400; font-size: var(--s-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); }
+.decoder td:first-child { font-family: var(--f-mono); font-weight: 600; color: var(--accent); white-space: nowrap; }
+.decoder td.en-c { color: var(--ink-soft); }
+.decoder td.ur { font-family: var(--f-urdu); direction: rtl; text-align: right; line-height: 2.1; white-space: nowrap; }
+
+/* Pipeline */
+.pipeline { list-style: none; margin: 0; padding: 0; display: grid; counter-reset: step; }
+.pipeline li {
+  counter-increment: step;
+  display: grid; grid-template-columns: 44px 1fr; gap: 14px;
+  padding-block: 16px; border-top: 1px solid var(--rule);
+}
+.pipeline li:last-child { border-bottom: 1px solid var(--rule); }
+.pipeline li::before {
+  content: counter(step);
+  font-family: var(--f-display); font-weight: 700; font-size: var(--s-lg);
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.pipeline li.det::before { background: var(--ink); color: var(--paper); }
+.pipeline li > div { display: grid; gap: 6px; }
+.pipeline .who { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--ink-soft); }
+
+/* Feature ledger */
+.ledger { display: grid; border-top: 1px solid var(--rule); }
+.row {
+  display: grid; grid-template-columns: 124px 1fr; gap: 16px;
+  padding-block: 14px; border-bottom: 1px solid var(--rule);
+}
+.row .what { display: grid; gap: 4px; }
+.row .what .bi { font-size: var(--s-sm); }
+@media (max-width: 520px) { .row { grid-template-columns: 1fr; gap: 6px; } }
+
+.pill {
+  justify-self: start; align-self: start;
+  font-family: var(--f-mono); font-size: var(--s-xs); font-weight: 600;
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+}
+.pill.ok { background: var(--accent-soft); color: var(--accent); }
+.pill.proto { background: var(--amber-soft); color: var(--amber); }
+.pill.new { background: var(--violet-soft); color: var(--violet); }
+.pill.risk { background: var(--red-soft); color: var(--red); }
+
+.legend { display: grid; gap: 8px; font-size: var(--s-sm); }
+.legend > div { display: grid; grid-template-columns: 124px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 520px) { .legend > div { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Solves / doesn't */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 680px) { .split { grid-template-columns: 1fr; } }
+.col { background: var(--surface); border: 1px solid var(--rule); padding: 20px; display: grid; gap: 14px; align-content: start; }
+.col h3 { font-size: var(--s-md); display: grid; gap: 0; }
+.col h3 small { font-family: var(--f-body); font-weight: 400; color: var(--ink-soft); font-size: var(--s-sm); }
+.col.yes h3 { color: var(--accent); }
+.col.no h3 { color: var(--red); }
+.col ul { margin: 0; padding-left: 1.1em; display: grid; gap: 12px; font-size: var(--s-sm); }
+
+/* Callouts */
+.note { padding: 14px 18px; border-left: 3px solid var(--amber); background: var(--amber-soft); font-size: var(--s-sm); display: grid; gap: 6px; }
+.note b { color: var(--ink); }
+
+/* Script */
+.script { display: grid; border: 1px solid var(--rule); background: var(--surface); }
+.beat { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding: 18px; border-bottom: 1px solid var(--rule); }
+.beat:last-child { border-bottom: 0; }
+.beat .t { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; padding-top: 3px; }
+.beat .t small { display: block; color: var(--ink-soft); font-weight: 400; text-transform: uppercase; letter-spacing: .06em; }
+.beat .say { display: grid; gap: 10px; }
+.mean { color: var(--ink-soft); font-size: .85em; }
+.beat .tag { font-family: var(--f-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.beat .speak { margin: 0; padding: 10px 14px; background: var(--accent-soft); border-radius: 4px; font-size: var(--s-md); line-height: 1.55; }
+.beat .do { font-size: var(--s-sm); color: var(--ink-soft); display: grid; gap: 8px; }
+.beat .do b { color: var(--ink); }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; }
+@media (max-width: 520px) { .beat { grid-template-columns: 1fr; gap: 6px; } }
+
+/* Q&A */
+details { border-bottom: 1px solid var(--rule); }
+details:first-of-type { border-top: 1px solid var(--rule); }
+summary { cursor: pointer; padding-block: 14px; list-style: none; display: grid; grid-template-columns: 16px 1fr; gap: 10px; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "Q"; font-family: var(--f-mono); color: var(--accent); }
+details[open] summary::before { content: "A"; }
+summary .bi > span:first-child { font-weight: 600; }
+details .ans { padding: 0 0 18px 26px; font-size: var(--s-sm); display: grid; gap: 12px; max-width: 72ch; }
+details .ans b { color: var(--ink); }
+details .speak { padding: 8px 12px; background: var(--accent-soft); border-radius: 4px; }
+
+/* Checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.check li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: var(--s-sm); }
+.check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--accent); }
+
+/* Stack table */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+.tbl table { width: 100%; border-collapse: collapse; font-size: var(--s-sm); }
+.tbl td, .tbl th { padding: 9px 14px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl th { font-family: var(--f-mono); font-weight: 400; font-size: var(--s-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); }
+.tbl td:first-child { white-space: nowrap; font-weight: 600; }
+
+footer { margin-top: 56px; padding-top: 18px; border-top: 2px solid var(--ink); font-size: var(--s-xs); color: var(--ink-soft); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+footer .ur { font-family: var(--f-urdu); font-size: 1rem; }
+
+@media print { nav.toc { display: none; } details { break-inside: avoid; } }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="bi"><span class="label" style="color:var(--ink)">Alibaba Cloud AI Hackathon Pakistan 2026 · Sehat ka track · Presentation ki tayyari</span><span class="en label">Healthcare Track · Presentation brief</span></div>
+  <div class="brand">
+    <h1>NuskhaSaathi</h1>
+    <span class="ur" lang="ur">نسخہ ساتھی</span>
+  </div>
+  <div class="bi lede">
+    <span>Haath se likhe nuskhe ki photo khainchein, aur Urdu mein sun lein ke kaunsi dawai kab aur kaise leni hai. Agar do dawaiyan saath mein khatarnak hon to app foran warning deti hai.</span>
+    <span class="en">Photograph a handwritten prescription. Hear it explained in Urdu, with a warning if two of the medicines are dangerous together.</span>
+  </div>
+  <div class="facts">
+    <div class="fact"><b>149</b><span>tests pass</span><small>tests passing</small></div>
+    <div class="fact"><b>25</b><span>API endpoints</span><small>backend routes</small></div>
+    <div class="fact"><b>10</b><span>app ki screens</span><small>app screens</small></div>
+    <div class="fact"><b>15</b><span>khatarnak dawai jore</span><small>verified drug pairs</small></div>
+  </div>
+  <div class="key">
+    <span><b>Kaise parhein:</b> upar Roman Urdu, neeche <b>EN</b> wali line English mein.</span>
+    <span>Ye numbers 10 Oct 2026 ko code chala kar check kiye gaye hain.</span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <ol>
+    <li><a href="#problem"><span>1</span>Masla</a></li>
+    <li><a href="#how"><span>2</span>Kaise kaam karta hai</a></li>
+    <li><a href="#built"><span>3</span>Kya bana hua hai</a></li>
+    <li><a href="#solves"><span>4</span>Kya hal karta hai / kya nahi</a></li>
+    <li><a href="#pitch"><span>5</span>Pitch script</a></li>
+    <li><a href="#qa"><span>6</span>Judges ke sawal</a></li>
+    <li><a href="#check"><span>7</span>Aaj raat ki checklist</a></li>
+    <li><a href="#stack"><span>8</span>Tech stack</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section id="problem">
+  <div class="sec-head">
+    <span class="label">1 · Masla · The problem</span>
+    <h2>Nuskha mojood hai, lekin mareez usay parh nahi sakta.</h2>
+    <p class="en">The prescription exists. The patient can't read it.</p>
+  </div>
+  <div class="prose">
+    <div class="bi">
+      <span>Pakistan mein doctor jaldi mein nuskha likhta hai: English mein dawaiyon ke naam, Latin shorthand, aur aisi likhai jo sirf pharmacist ke liye hoti hai. Jo shakhs English nahi parh sakta, uske liye ye kaghaz bekaar hai.</span>
+      <span class="en">A Pakistani doctor writes a nuskha in a hurry, using English drug names, Latin shorthand and handwriting meant for the pharmacist. An adult who can't read English gets nothing useful from it.</span>
+    </div>
+    <div class="bi">
+      <span>Nuqsan roz ka hai: din mein teen ki jagah do baar dawai, bukhar utarte hi course chhor dena, aur do alag doctors ki aisi dawaiyan saath le lena jo kabhi saath nahi leni chahiye.</span>
+      <span class="en">The harm is everyday: twice a day instead of three times, a course stopped when the fever breaks, and two medicines from two different doctors that should never be taken together.</span>
+    </div>
+    <div class="bi">
+      <span><b>Hamari baat:</b> masla doctor ya dawai tak pohanch ka nahi, <b>samajh</b> ka hai. Telemedicine doctor tak le jati hai, pharmacy app dawai ghar bhej deti hai. Dono wahan ruk jate hain jahan nuskha mareez ke haath mein aata hai. NuskhaSaathi wahi se shuru hota hai.</span>
+      <span class="en">The failure isn't access, it's understanding. Telemedicine and pharmacy apps both stop where the paper reaches the patient, and that's where NuskhaSaathi starts.</span>
+    </div>
+  </div>
+  <div class="decoder">
+    <table>
+      <thead><tr><th>Likha hota hai</th><th>Roman Urdu</th><th>English</th><th>Mareez sunta hai</th></tr></thead>
+      <tbody>
+        <tr><td>OD</td><td>Din mein ek baar</td><td class="en-c">Once a day</td><td class="ur" lang="ur">دن میں ایک بار</td></tr>
+        <tr><td>BD</td><td>Din mein do baar</td><td class="en-c">Twice a day</td><td class="ur" lang="ur">دن میں دو بار</td></tr>
+        <tr><td>TDS</td><td>Din mein teen baar</td><td class="en-c">Three times a day</td><td class="ur" lang="ur">دن میں تین بار</td></tr>
+        <tr><td>SOS</td><td>Sirf zaroorat par</td><td class="en-c">Only when needed</td><td class="ur" lang="ur">صرف ضرورت پر</td></tr>
+        <tr><td>5/7</td><td>Paanch din tak</td><td class="en-c">For five days</td><td class="ur" lang="ur">پانچ دن تک</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="how">
+  <div class="sec-head">
+    <span class="label">2 · Kaise kaam karta hai · How it works</span>
+    <h2>Photo se awaaz tak chaar qadam. Inmein se ek jaan boojh kar AI nahi hai.</h2>
+    <p class="en">Four steps from photo to voice. One of them is deliberately not AI.</p>
+  </div>
+  <ol class="pipeline">
+    <li><div>
+      <div class="bi"><b>Likhai parhna</b><span class="en"><b>Read the handwriting</b></span></div>
+      <div class="bi">
+        <span>Qwen-VL Plus nuskhe ka text nikalta hai: Urdu, English aur shorthand sab. Jo lafz samajh na aaye, woh <code>[unclear]</code> likh deta hai, andaza nahi lagata.</span>
+        <span class="en">Qwen-VL Plus extracts the text. Words it can't read come back as <code>[unclear]</code> instead of being guessed.</span>
+      </div>
+      <span class="who">POST /upload · qwen-vl-plus</span>
+    </div></li>
+    <li><div>
+      <div class="bi"><b>Dawaiyon ki list banana</b><span class="en"><b>Structure the medicines</b></span></div>
+      <div class="bi">
+        <span>Qwen Plus text ko dawaiyon ki list mein badalta hai: dose, kitni baar, kitne din. Ghalat spelling theek karta hai (Paracetmol → Paracetamol), aur har dawai par <b>Confident</b> ya <b>Uncertain</b> ka nishan lagata hai.</span>
+        <span class="en">Qwen Plus builds a list with dosage, frequency and duration, fixes misreads, and marks each medicine Confident or Uncertain.</span>
+      </div>
+      <span class="who">POST /identify-medicines · qwen-plus</span>
+    </div></li>
+    <li class="det"><div>
+      <div class="bi"><b>Safety check, seedhe code mein</b><span class="en"><b>Safety check, in plain code</b></span></div>
+      <div class="bi">
+        <span>15 tasdeeq shuda khatarnak jooron ki table, is nuskhe <i>aur</i> mareez ke purane nuskhon dono par check hoti hai. Brand naam bhi samajhti hai: Brufen + Disprin = Ibuprofen + Aspirin. Yahan AI nahi, is liye warning na ghalat banti hai na chhoot-ti hai.</span>
+        <span class="en">A fixed table of 15 dangerous pairs checks this prescription and the patient's others, including brand names. No model is involved, so a warning can't be invented or missed.</span>
+      </div>
+      <span class="who">checkInteractions() · deterministic</span>
+    </div></li>
+    <li><div>
+      <div class="bi"><b>Urdu mein bol kar samjhana</b><span class="en"><b>Explain it out loud in Urdu</b></span></div>
+      <div class="bi">
+        <span>Qwen Plus har dawai ke liye chhoti, izzat wali Urdu wazahat likhta hai. Browser usay 0.85× raftaar par bolta hai taake aasani se samajh aaye.</span>
+        <span class="en">Qwen Plus writes a short Urdu explanation per medicine. The browser reads it aloud at 0.85× speed.</span>
+      </div>
+      <span class="who">POST /instructions · qwen-plus + Web Speech API</span>
+    </div></li>
+  </ol>
+</section>
+
+<!-- 3 -->
+<section id="built">
+  <div class="sec-head">
+    <span class="label">3 · Project mein kya hai · What's built</span>
+    <h2>Saare features, is hisaab se ke kitne mukammal hain</h2>
+    <p class="en">Feature inventory, sorted by how finished each one is.</p>
+  </div>
+
+  <div class="legend">
+    <div><span class="pill ok">Working</span><div class="bi"><span>Poori tarah chalta hai. Demo mein dikhayein.</span><span class="en">Fully working. Show it in the demo.</span></div></div>
+    <div><span class="pill new">New</span><div class="bi"><span>Naya kaam, abhi commit nahi hua.</span><span class="en">New work, not committed yet.</span></div></div>
+    <div><span class="pill proto">Prototype</span><div class="bi"><span>Adhoora ya sample data. "Aage ka plan" keh kar batayein, ya chhor dein.</span><span class="en">Unfinished or sample data. Present as "next", or leave out.</span></div></div>
+    <div><span class="pill risk">Ehtiyat</span><div class="bi"><span>Is par sawal ho sakta hai. Soch samajh kar dikhayein.</span><span class="en">Likely to draw questions. Handle carefully.</span></div></div>
+  </div>
+
+  <div class="ledger">
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Photo → likhai parhna → dawaiyan → Urdu awaaz</b><span class="en">Photo → OCR → medicines → Urdu voice</span></div><div class="bi"><span>Asal flow: teen marhalon ki progress, OCR text dekhne ka option, "Read All", aur Urdu/English badalne ka button.</span><span class="en">The core flow with progress stages, raw OCR viewer, Read All and an Urdu/English toggle.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Yaqeen ke nishan</b><span class="en">Confidence badges</span></div><div class="bi"><span>Har dawai par hara "Confident" ya peela "Uncertain" nishan. Database bhi isay zaroori banata hai.</span><span class="en">Green Confident / amber Uncertain on every medicine, enforced in the database.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Dawaiyon ke takrao ki warning</b><span class="en">Drug interaction warnings</span></div><div class="bi"><span>15 tasdeeq shuda jore, brand naam bhi pehchanta hai. Laal banner sab se upar aata hai.</span><span class="en">Drug interaction warnings: 15 verified pairs, brand-aware, shown as a red banner at the top.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Mukhtalif nuskhon ka mushtarka check</b><span class="en">Cross-prescription scan</span></div><div class="bi"><span><i>Alag doctors</i> ke nuskhon ke darmiyan khatarnak jore dhoondta hai. Pakistan mein yahi aam masla hai.</span><span class="en">Cross-prescription scan: finds dangerous pairs across prescriptions from different doctors.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Rozana dawai ka schedule</b><span class="en">Daily dose schedule</span></div><div class="bi"><span>Subah / dopehar / shaam / raat (صبح، دوپہر، شام، رات). Jis dawai ka waqt saaf na ho, woh "Doctor se tasdeeq karein" mein jati hai, andaza nahi lagaya jata. Dawai khatam hone se pehle refill ka notice bhi.</span><span class="en">Daily dose schedule. Unclear timing goes to "Confirm with doctor" instead of a guessed time. Includes an "ending soon" refill notice.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Mareez khud ghalti theek kare</b><span class="en">Patient correction</span></div><div class="bi"><span>Ghalat parha hua naam mareez theek kare to safety check dobara chalta hai aur purani Urdu wazahat mit jati hai.</span><span class="en">Patient correction re-runs the safety check and clears the outdated Urdu explanation.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Ghar walon ke liye link</b><span class="en">Caregiver link</span></div><div class="bi"><span>Doosre sheher mein beta ya beti bina account ke link khol kar schedule aur warnings dekh sakte hain. Link band bhi kiya ja sakta hai.</span><span class="en">Caregiver link: family sees the schedule and warnings with no account. The link can be revoked.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Urdu PDF aur doctor ke liye khulasa</b><span class="en">Urdu PDF and doctor summary</span></div><div class="bi"><span>Sahi Urdu font ke saath print hone wala kaghaz, fridge par lagane ya agle doctor ko dikhane ke liye. Summary WhatsApp par bheji ja sakti hai.</span><span class="en">Printable Urdu PDF and a doctor summary you can paste into WhatsApp.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>AI Rehnuma: awaaz se sawal jawab</b><span class="en">AI Rehnuma voice Q&amp;A</span></div><div class="bi"><span>"Khaane se pehle ya baad?" Jawab Urdu mein, sirf isi nuskhe ki dawaiyon ki buniyad par.</span><span class="en">Voice Q&amp;A answered in Urdu, using only this prescription's medicines.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Purane nuskhe, account, password badalna</b><span class="en">History, accounts, password reset</span></div><div class="bi"><span>Koi bhi purana nuskha dobara sun sakte hain. Har mareez sirf apna data dekh sakta hai.</span><span class="en">Re-hear any past prescription. Each patient only sees their own data.</span></div></div></div>
+    <div class="row"><span class="pill ok">Working</span><div class="what"><div class="bi"><b>Durusti ka imtihaan</b><span class="en">Accuracy benchmark</span></div><div class="bi"><span>Asal pipeline ko haath se likhe sahi jawabon se milata hai. 7 mein se 7 dawaiyan sahi, koi dawai apni taraf se nahi banai. <b>Lekin sirf 2 saaf tasveeron par test hua hai</b>, is liye isay aam accuracy ka daawa na banayein.</span><span class="en">7 of 7 medicines correct, nothing invented, but only on 2 clean images. Not a general accuracy figure.</span></div></div></div>
+    <div class="row"><span class="pill new">New</span><div class="what"><div class="bi"><b>Allergy ki warning aur profile page</b><span class="en">Allergy alerts and profile page</span></div><div class="bi"><span>Mareez signup par ya naye Profile page par apni allergies likhta hai. Naam milne par jamni (violet) banner aata hai, jo dawai takrao wale banner se alag hai. 31 naye tests. Ye sirf naam milata hai, dawaiyon ke khandaan nahi pehchanta.</span><span class="en">Allergy alerts on a name match, shown in a separate violet banner. 31 new tests. Doesn't know drug families.</span></div></div></div>
+    <div class="row"><span class="pill proto">Prototype</span><div class="what"><div class="bi"><b>Khaane ka mashwara, sasti dawai, goli pehchanna</b><span class="en">Diet coach, generic alternatives, pill scanner</span></div><div class="bi"><span>Endpoints asli hain, lekin jawab AI ke banaye hue hain, kisi dawai ya qeemat ke database se check nahi hote. Pill scanner photo nahi, sirf likha hua bayan leta hai.</span><span class="en">Real endpoints, but answers are AI-generated and unchecked. The pill scanner takes text, not a photo.</span></div></div></div>
+    <div class="row"><span class="pill proto">Prototype</span><div class="what"><div class="bi"><b>BP/sugar chart, pharmacy stock, dawai lene ka record</b><span class="en">Vitals chart, pharmacy stock, adherence streak</span></div><div class="bi"><span>Sirf sample data. Kuch save nahi hota.</span><span class="en">Sample data only. Nothing is saved.</span></div></div></div>
+    <div class="row"><span class="pill proto">Prototype</span><div class="what"><div class="bi"><b>WhatsApp par yaad dihani</b><span class="en">WhatsApp reminders</span></div><div class="bi"><span>Screens bani hui hain, lekin asal mein koi message nahi jata.</span><span class="en">The screens exist, but no messages are sent.</span></div></div></div>
+    <div class="row"><span class="pill proto">Prototype</span><div class="what"><div class="bi"><b>Tasveerein cloud par save karna</b><span class="en">Alibaba Cloud OSS storage</span></div><div class="bi"><span>Code likha hua hai, abhi tasveerein computer par hi save hoti hain.</span><span class="en">Adapter written; images are stored locally for now.</span></div></div></div>
+    <div class="row"><span class="pill risk">Ehtiyat</span><div class="what"><div class="bi"><b>Alamat ki jaanch</b><span class="en">Symptom triage</span></div><div class="bi"><span>AI se poocha jata hai ke alamat halki hai ya sangeen. Ye "hum kabhi tashkhees (diagnosis) nahi karte" wali baat se takrata hai. Section 6 ka sawal 2 dekhein.</span><span class="en">An open-ended AI triage prompt that rates symptoms. Conflicts with "we never diagnose". See question 2 in section 6.</span></div></div></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="solves">
+  <div class="sec-head">
+    <span class="label">4 · Daira · Scope</span>
+    <h2>Ye kya hal karta hai, aur kya nahi</h2>
+    <p class="en">What it solves, and what it doesn't.</p>
+  </div>
+  <div class="split">
+    <div class="col yes">
+      <h3>Hal karta hai<small>Solves</small></h3>
+      <ul>
+        <li><div class="bi"><span><b>Nuskha parh na sakna.</b> Urdu mein bol kar batata hai, parhna zaroori nahi.</span><span class="en">Can't read it: spoken Urdu, no reading needed.</span></div></li>
+        <li><div class="bi"><span><b>Shorthand ki uljhan.</b> BD, TDS, 5/7 saaf waqt aur dinon mein badal jate hain.</span><span class="en">Shorthand becomes plain times and days.</span></div></li>
+        <li><div class="bi"><span><b>Mukhtalif doctors ki dawaiyon ka takrao.</b> Saare nuskhe ek saath check hote hain.</span><span class="en">Dangerous combinations across doctors are checked together.</span></div></li>
+        <li><div class="bi"><span><b>Bhool jana ke kab kya leni hai.</b> Jaane pehchane waqton mein rozana schedule.</span><span class="en">A daily schedule in familiar times of day.</span></div></li>
+        <li><div class="bi"><span><b>Ghar wale nazar na rakh sakein.</b> Caregiver link, PDF aur doctor summary.</span><span class="en">Family can follow along via link, PDF and summary.</span></div></li>
+        <li><div class="bi"><span><b>AI ki chhupi ghaltiyan.</b> Uncertain nishan, mareez ki tasheeh, aur dose ya waqt ka kabhi andaza nahi.</span><span class="en">Uncertain badges, patient correction, and no guessed doses or timings.</span></div></li>
+        <li><div class="bi"><span><b>Maloom allergies</b> <i>(naya)</i>. Mareez ki likhi allergy se naam mile to warning.</span><span class="en">Known allergies flagged by name (new).</span></div></li>
+      </ul>
+    </div>
+    <div class="col no">
+      <h3>Hal nahi karta<small>Doesn't solve</small></h3>
+      <ul>
+        <li><div class="bi"><span><b>Tashkhees ya ilaaj chunna.</b> Sirf doctor ka likha hua samjhata hai. Ye jaan boojh kar hai.</span><span class="en">Diagnosis or choosing treatment. By design.</span></div></li>
+        <li><div class="bi"><span><b>Ghalat nuskha.</b> Agar doctor se ghalti hui to app wahi ghalti samjha degi.</span><span class="en">A wrong prescription gets explained faithfully.</span></div></li>
+        <li><div class="bi"><span><b>Mukammal dawai safety.</b> 15 jore achi shuruaat hai, poora clinical database nahi.</span><span class="en">15 pairs is a careful start, not a full database.</span></div></li>
+        <li><div class="bi"><span><b>Allergy ke khandaan.</b> Penicillin allergy par amoxicillin ki warning nahi aayegi.</span><span class="en">Penicillin allergy won't flag amoxicillin.</span></div></li>
+        <li><div class="bi"><span><b>Bohat gandi likhai par sabit accuracy.</b> Abhi sirf 2 saaf tasveeron par test hua hai.</span><span class="en">Accuracy on messy handwriting isn't proven yet.</span></div></li>
+        <li><div class="bi"><span><b>Smartphone ya internet na ho.</b> Phone zaroori hai. PDF kuch had tak madad karti hai.</span><span class="en">Needs a smartphone and internet. The PDF partly helps.</span></div></li>
+        <li><div class="bi"><span><b>Har phone par Urdu awaaz.</b> Browser par munhasir hai. Urdu awaaz na ho to app notice dikhati hai.</span><span class="en">Urdu voice depends on the browser; the app shows a notice when missing.</span></div></li>
+        <li><div class="bi"><span><b>Dawai ki qeemat.</b> Sasti dawai wala feature prototype hai, qeematein tasdeeq shuda nahi.</span><span class="en">Cost: the alternatives feature is a prototype with unverified prices.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="pitch">
+  <div class="sec-head">
+    <span class="label">5 · Kal · Tomorrow</span>
+    <h2>4 minute ki pitch, hissa ba hissa</h2>
+    <p class="en">A 4-minute pitch, beat by beat.</p>
+  </div>
+  <div class="prose">
+    <div class="bi">
+      <span>Ek insaan ki kahani se shuru karein aur safety design par khatam karein. Judges ko Urdu awaaz <b>sunwaein</b>. Demo ka sab se yaadgaar lamha yahi hai.</span>
+      <span class="en">Open with a person, end on the safety design. Let judges hear the Urdu voice.</span>
+    </div>
+    <div class="bi">
+      <span>Har hisse mein pehle Roman Urdu mein matlab hai. Hare dabbe mein woh English line hai jo judges ke saamne bolni hai. Agar judges Urdu samajhte hon to aap Urdu mein bhi bol sakte hain.</span>
+      <span class="en">Each part gives the meaning in Roman Urdu first. The green box is the English line to say to judges.</span>
+    </div>
+  </div>
+
+  <div class="script">
+    <div class="beat">
+      <div class="t">0:00–0:30<small>Shuruaat</small><small>Hook</small></div>
+      <div class="say">
+        <p><b>Matlab</b> <span class="mean">(meaning)</span><b>:</b> Rashida ka taaruf karwayein. Woh 62 saal ki hain, Multan mein rehti hain, teen doctors ki paanch dawaiyan leti hain, aur English nahi parh saktin. Phir haath se likha nuskha dikhayein.</p>
+        <span class="tag">Judges ke saamne ye bolna hai · Say this</span>
+        <p class="speak">"This is Rashida. She's 62, lives in Multan, and takes five medicines from three different doctors. She can't read English. Every prescription she owns looks like this."</p>
+        <div class="do bi"><span>Kirdaar farzi ho lekin wazeh: umar, sheher, doctors ki tadaad.</span><span class="en">Use a fictional persona, but make her specific: age, city, number of doctors.</span></div>
+      </div>
+    </div>
+    <div class="beat">
+      <div class="t">0:30–1:00<small>Masla</small><small>Problem</small></div>
+      <div class="say">
+        <p><b>Matlab</b> <span class="mean">(meaning)</span><b>:</b> BD, TDS, 5/7 pharmacist ke liye likha jata hai, Rashida ke liye nahi. Is liye woh dawai ghalat leti hain, bukhar utarte hi chhor deti hain, aur takrane wali dawaiyan saath le leti hain. Telemedicine doctor tak le gayi, magar kisi ne yeh yaqeeni nahi banaya ke woh samjhein.</p>
+        <span class="tag">Judges ke saamne ye bolna hai · Say this</span>
+        <p class="speak">"BD, TDS, 5/7. Written for a pharmacist, not for her. So she takes a medicine twice when it should be three times, stops when the fever goes, and never learns that two of her medicines shouldn't be taken together. Telemedicine got her to a doctor. Nobody made sure she understood what the doctor wrote."</p>
+      </div>
+    </div>
+    <div class="beat">
+      <div class="t">1:00–2:45<small>Live demo</small><small>Demo</small></div>
+      <div class="say">
+        <p><b>Matlab</b> <span class="mean">(meaning)</span><b>:</b> Sirf ek photo khainchni hai, baqi app karti hai.</p>
+        <span class="tag">Judges ke saamne ye bolna hai · Say this</span>
+        <p class="speak">"She takes a photo, and that's all she has to do."</p>
+        <div class="do">
+          <ol class="steps">
+            <li><div class="bi"><span><code>prescription-sample-1.png</code> live upload karein aur teen marhale bolte jayein.</span><span class="en">Upload the sample live and narrate the three stages.</span></div></li>
+            <li><div class="bi"><span><b>Uncertain</b> nishan dikhayein: "Jab yaqeen na ho to bata deta hai. Ghalat jawab yaqeen ke saath dena sab se khatarnak hai."</span><span class="en">"When it isn't sure, it says so. A confident wrong answer is the dangerous failure."</span></div></li>
+            <li><div class="bi"><span><b>Read aloud</b> dabayein. Khamosh ho jayein aur 5 second Urdu chalne dein.</span><span class="en">Press Read aloud, stay silent, let the Urdu play for about 5 seconds.</span></div></li>
+            <li><div class="bi"><span><b>Laal warning banner</b> dikhayein. Agar live nuskhe mein na aaye to seed wala nuskha kholein.</span><span class="en">Show the red interaction banner (use the seeded prescription if needed).</span></div></li>
+            <li><div class="bi"><span><b>Schedule</b> kholein aur "Doctor se tasdeeq karein" wala khana dikhayein: "Ye kabhi waqt ka andaza nahi lagata."</span><span class="en">Open Schedule: "It never guesses a time."</span></div></li>
+            <li><div class="bi"><span><b>Caregiver link</b> private window mein kholein: "Lahore mein unka beta ye dekhta hai. Koi account nahi, aur woh link band kar sakti hain."</span><span class="en">"Her son in Lahore sees this. No account, and she can revoke it."</span></div></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div class="beat">
+      <div class="t">2:45–3:30<small>Bharosa kyun</small><small>Trust</small></div>
+      <div class="say">
+        <p><b>Matlab</b> <span class="mean">(meaning)</span><b>:</b> Teen usool. Ek: sirf samjhata hai, tashkhees kabhi nahi. Do: safety check AI nahi, code mein 15 tasdeeq shuda jore hain, is liye ghalat warning nahi ban sakti. Teen: accuracy naapi hai aur had bhi khud batayein: saaf nuskhon par perfect, gandi likhai par abhi test baqi hai.</p>
+        <span class="tag">Judges ke saamne ye bolna hai · Say this</span>
+        <p class="speak">"Three design rules. One: it explains, it never diagnoses. Two: the safety check isn't AI. It's a table of 15 verified pairs in code, so it can't make up a warning. Three: we measured accuracy and we'll tell you the limit. It's perfect on clean prescriptions, and we haven't yet tested really messy handwriting. That's our next step."</p>
+        <div class="do bi"><span>Apni kamzori khud batana healthcare judges ka bharosa jeet-ta hai.</span><span class="en">Volunteering the limitation builds trust with healthcare judges.</span></div>
+      </div>
+    </div>
+    <div class="beat">
+      <div class="t">3:30–4:00<small>Ikhtitam</small><small>Close</small></div>
+      <div class="say">
+        <p><b>Matlab</b> <span class="mean">(meaning)</span><b>:</b> Alibaba Cloud par bana hai: Qwen-VL parhta hai, Qwen Plus samjhata hai. 149 automated tests. Aage: WhatsApp reminders, pharmacist se safety table ka review, aur ek clinic mein pilot. Aakhri line yaad rakhein.</p>
+        <span class="tag">Judges ke saamne ye bolna hai · Say this</span>
+        <p class="speak">"Built on Alibaba Cloud: Qwen-VL reads, Qwen Plus explains. 149 automated tests. Next: WhatsApp reminders, a pharmacist review of the safety table, and a pilot with one clinic to measure whether courses actually get finished. Telemedicine connects you to a doctor. NuskhaSaathi makes sure you understand what the doctor already wrote."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="bi">
+      <span><b>Agar Wi-Fi ya API band ho jaye:</b> demo account (<code>test@nuskhasaathi.com</code> / <code>demo123456</code>) se login karein aur <b>History</b> kholein. Wahan pehle se save nuskhe hain jin mein badges, Urdu text, awaaz aur warning sab hai, internet ke baghair. App bina API key ke demo mode mein bhi chalti hai. Aaj raat 60 second ki screen video bhi bana lein.</span>
+      <span class="en">Backup plan: log in with the demo account and open History. Seeded prescriptions work without the network. Also record a 60-second video tonight.</span>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="qa">
+  <div class="sec-head">
+    <span class="label">6 · Sawal jawab · Q&amp;A prep</span>
+    <h2>Judges jo sawal pooch sakte hain</h2>
+    <p class="en">Questions judges are likely to ask.</p>
+  </div>
+  <div>
+    <details>
+      <summary><div class="bi"><span>Asal doctor ki likhai par OCR kitna sahi hai?</span><span class="en">How accurate is the OCR on real doctor handwriting?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Seedha jawab dein: benchmark par 7 mein se 7 dawaiyan sahi, dose aur waqt bhi sahi, kuch apni taraf se nahi banaya. Lekin sirf 2 saaf tasveerein thin. Gandi likhai, kam roshni aur Urdu script agle 10 test hain. Phir safety net batayein: Uncertain nishan, <code>[unclear]</code>, aur mareez ki tasheeh.</span><span class="en">7 of 7 correct with nothing invented, but on 2 clean images. Messy handwriting is next. Then mention the safety net.</span></div>
+        <p class="speak">"On our benchmark it got all 7 medicines right and invented nothing. But that's 2 clean images. Messy handwriting, bad lighting and Urdu script are the next cases we're adding."</p>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Aap kehte hain tashkhees nahi karte, phir symptom triage kyun hai?</span><span class="en">You say it never diagnoses, but there's a symptom triage feature.</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span><b>Ye project ka sab se kamzor nukta hai. Aaj raat faisla karein.</b> Ya to triage demo mein na dikhayein, ya isay mehdood tareeqe se batayein: sirf ye check karta hai ke alamat pehle se likhi dawai ka maloom side effect hai ya nahi, aur jawab hamesha "doctor ko dikhayein" ya "emergency jayein" hota hai. Abhi ka prompt is se zyada khula hai, waqt ho to usay tang kar dein.</span><span class="en">Weakest point. Either skip it in the demo or describe it narrowly. The current prompt is broader; tighten it if you have time.</span></div>
+        <p class="speak">"It only checks whether a symptom is a known side effect of medicines already prescribed, and the answer is always 'see your doctor' or 'go to emergency'. It never suggests a treatment."</p>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Sirf 15 jore kyun?</span><span class="en">Why only 15 interaction pairs?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Jaan boojh kar. Har jora achi tarah documented hai aur hum har ek ka difa kar sakte hain. Bari list jo tasdeeq na ho, zyada khatarnak hai. Barhane se pehle pharmacist se review karwana hai.</span><span class="en">On purpose: each pair is defensible. A large unverified list is more dangerous.</span></div>
+        <p class="speak">"On purpose. Every pair is well documented and we can defend each one. A large list we can't verify would be more dangerous. Before it grows, we want a pharmacist to review it."</p>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Agar AI dawai ka naam ghalat parh le to?</span><span class="en">What if the AI misreads a medicine name?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Peele rang mein Uncertain dikhta hai. Mareez theek kar sakta hai, jis se safety check dobara chalta hai aur purani Urdu wazahat mit jati hai, taake ghalat baat na bole. Purani ghalat baat sunane se kuch na sunana behtar hai.</span><span class="en">It shows as Uncertain; correcting it re-runs the safety check and deletes the old explanation.</span></div>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Paisa kaun dega? Business model kya hai?</span><span class="en">Who pays? What's the business model?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Mashwara, jis par aap khud yaqeen karein woh chunein: mareez ke liye muft. Clinic aur pharmacy chains paisa dein, kyunke dawai theek lene se mareez kam wapas aate hain. Doosra option insurance aur NGOs ke chronic bimari programs. Har nuskhe ki AI cost chand API calls hai, aur awaaz phone par muft chalti hai.</span><span class="en">Free for patients; clinics and pharmacy chains pay. Insurers and NGOs second. Cost is a few API calls per prescription.</span></div>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Google Lens aur Google Translate se kya farq hai?</span><span class="en">How is this different from Google Lens plus Translate?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Lens sirf alfaaz parhta hai. Usay nahi pata ke BD ka matlab din mein do baar hai, woh do doctors ki dawaiyon ke takrao ki warning nahi deta, schedule nahi banata, ye nahi batata ke kab yaqeen nahi, aur jo parh nahi sakta us se baat nahi karta.</span><span class="en">Lens reads words. It doesn't decode BD, warn about interactions, build a schedule, flag uncertainty, or speak to someone who can't read.</span></div>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Mareez ki privacy ka kya?</span><span class="en">What about patient privacy?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Password hash hote hain. Har nuskha sirf uske malik ko dikhta hai; kisi aur ka nuskha bilkul aisa lagta hai jaise mojood hi nahi. Caregiver link lambe random token hain jo band kiye ja sakte hain. Demo ka sara data farzi hai. Imaandari se kahein ke production mein encrypted storage aur data protection review chahiye hoga.</span><span class="en">Hashed passwords, owner-only access, revocable random links, fictional demo data. Production needs encrypted storage and a data-protection review.</span></div>
+      </div>
+    </details>
+    <details>
+      <summary><div class="bi"><span>Kya ye offline ya bina smartphone ke chalta hai?</span><span class="en">Does it work offline or without a smartphone?</span></div></summary>
+      <div class="ans">
+        <div class="bi"><span>Photo aur AI wale qadam ke liye internet chahiye. Awaaz phone par chalti hai aur history dobara suni ja sakti hai. Jin ghar walon ke paas smartphone nahi, unke liye print hui Urdu PDF. Saade phones tak pohanchne ke liye WhatsApp reminders plan mein hain.</span><span class="en">Photo and AI need internet. Read-aloud runs on device. The PDF covers people without phones; WhatsApp reminders are planned.</span></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="check">
+  <div class="sec-head">
+    <span class="label">7 · Sone se pehle · Before you sleep</span>
+    <h2>Aaj raat ki checklist</h2>
+    <p class="en">Tonight's checklist.</p>
+  </div>
+  <ul class="check">
+    <li><input type="checkbox" id="c1"><label for="c1" class="bi"><span><b>Allergy/profile ka kaam commit karein.</b> 10 badli hui aur 4 nayi files abhi commit nahi hui. Judges repo dekhte hain, aapka laptop nahi.</span><span class="en">Commit the allergy/profile work. Judges see the repo, not your laptop.</span></label></li>
+    <li><input type="checkbox" id="c2"><label for="c2" class="bi"><span><b>README theek karein.</b> Usmein abhi bhi PostgreSQL aur port 5173 likha hai. Project SQLite aur port 5174 use karta hai.</span><span class="en">Fix the README: it says PostgreSQL and port 5173; the project uses SQLite and 5174.</span></label></li>
+    <li><input type="checkbox" id="c3"><label for="c3" class="bi"><span><b>SUBMISSION_SUMMARY.md ke numbers update karein:</b> "21 endpoints, 118 tests" ko 25 aur 149 karein.</span><span class="en">Update the summary numbers to 25 endpoints and 149 tests.</span></label></li>
+    <li><input type="checkbox" id="c4"><label for="c4" class="bi"><span><b>Triage ka faisla karein:</b> demo se nikaalein ya prompt mehdood karein (sawal 2).</span><span class="en">Decide on triage: skip it or narrow the prompt.</span></label></li>
+    <li><input type="checkbox" id="c5"><label for="c5" class="bi"><span><b>"1,300 logon par ek doctor" wala number check karein</b> slide par lagane se pehle, aur source tayyar rakhein.</span><span class="en">Verify the 1-doctor-per-1,300 figure and have the source ready.</span></label></li>
+    <li><input type="checkbox" id="c6"><label for="c6" class="bi"><span><b>Demo teen baar practice karein</b> usi laptop aur network par jo kal use hoga. Waqt naapein.</span><span class="en">Rehearse the demo three times on the real laptop and network. Time it.</span></label></li>
+    <li><input type="checkbox" id="c7"><label for="c7" class="bi"><span><b>Presentation wale computer par awaaz test karein.</b> Urdu awaaz install na ho to English par switch karein ya install kar lein.</span><span class="en">Test read-aloud on the presentation machine. Install an Urdu voice or use English.</span></label></li>
+    <li><input type="checkbox" id="c8"><label for="c8" class="bi"><span><b><code>npm run seed</code> chalayein</b> taake demo account mein saaf history ho.</span><span class="en">Run the seed so the demo account has clean history.</span></label></li>
+    <li><input type="checkbox" id="c9"><label for="c9" class="bi"><span><b>60 second ki backup video record karein</b> poore flow ki.</span><span class="en">Record a 60-second backup video of the full flow.</span></label></li>
+    <li><input type="checkbox" id="c10"><label for="c10" class="bi"><span><b>Stage par jaane se pehle dono servers chala dein:</b> <code>backend/</code> mein <code>npm start</code>, <code>frontend/</code> mein <code>npm run dev</code>, phir <code>localhost:5174</code> kholein.</span><span class="en">Start both servers before you walk up, then open localhost:5174.</span></label></li>
+  </ul>
+</section>
+
+<!-- 8 -->
+<section id="stack">
+  <div class="sec-head">
+    <span class="label">8 · Reference</span>
+    <h2>Tech stack</h2>
+    <p class="en">Kya kis cheez se bana hai · What it's built with.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Hissa · Layer</th><th>Kya karta hai · Technology</th></tr></thead>
+      <tbody>
+        <tr><td>Vision / OCR</td><td><div class="bi"><span>Nuskhe ki tasveer se likhai parhta hai</span><span class="en">Qwen-VL Plus, Alibaba Cloud DashScope</span></div></td></tr>
+        <tr><td>Language</td><td><div class="bi"><span>Dawaiyon ki list, Urdu wazahat aur sawal jawab banata hai</span><span class="en">Qwen Plus, Alibaba Cloud ModelStudio</span></div></td></tr>
+        <tr><td>Storage</td><td><div class="bi"><span>Tasveerein save karna; abhi computer par, baad mein cloud par</span><span class="en">Alibaba Cloud OSS adapter, local files for now</span></div></td></tr>
+        <tr><td>Frontend</td><td><div class="bi"><span>Woh screens jo mareez dekhta hai</span><span class="en">React 18, Vite, Tailwind CSS (port 5174)</span></div></td></tr>
+        <tr><td>Backend</td><td><div class="bi"><span>Peeche chalne wala server jo AI aur data sambhalta hai</span><span class="en">Node.js, Express (port 3001)</span></div></td></tr>
+        <tr><td>Database</td><td><div class="bi"><span>Data ek file mein save hota hai, alag database server nahi chahiye</span><span class="en">SQLite (better-sqlite3), no server needed</span></div></td></tr>
+        <tr><td>Voice</td><td><div class="bi"><span>Browser khud Urdu bolta aur sunta hai, koi kharcha nahi</span><span class="en">Browser Web Speech API (ur-PK)</span></div></td></tr>
+        <tr><td>PDF</td><td><div class="bi"><span>Print hone wala Urdu kaghaz banata hai</span><span class="en">PDFKit with Noto Naskh Arabic font</span></div></td></tr>
+        <tr><td>Security</td><td><div class="bi"><span>Password mehfooz, har user sirf apna data dekhe</span><span class="en">bcrypt passwords, JWT sessions, ownership checks</span></div></td></tr>
+        <tr><td>Tests</td><td><div class="bi"><span>149 khud-kaar tests, sab pass, AI ka kharcha nahi</span><span class="en">149 tests, 33 suites, no live AI calls</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span>NuskhaSaathi · Presentation brief · 10 Oct 2026</span>
+  <span class="ur" lang="ur">نسخہ ساتھی</span>
+</footer>
+
+</div>

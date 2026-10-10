@@ -4,7 +4,7 @@ const pool = require('../config/db');
 const verifyToken = require('../middleware/auth');
 // Reuses the interaction table and matcher that /instructions already owns, so
 // there is exactly one definition of "dangerous pair" in the codebase.
-const { checkInteractions } = require('./instructions');
+const { checkInteractions, checkAllergies } = require('./instructions');
 
 const router = express.Router();
 
@@ -92,6 +92,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
     const client = await pool.connect();
     let updatedMedicine = medicine;
     let interactionFlags = [];
+    let allergyFlags = [];
 
     try {
       await client.query('BEGIN');
@@ -123,6 +124,26 @@ router.patch('/:id', verifyToken, async (req, res) => {
         );
       }
 
+      // The allergy check is re-run for the same reason as the interaction
+      // check: correcting a misread name can reveal that the patient is
+      // allergic to what was actually prescribed.
+      const allergyRow = await client.query('SELECT allergies FROM users WHERE id = $1', [
+        req.user.id,
+      ]);
+      allergyFlags = checkAllergies(currentMedicines.rows, allergyRow.rows[0]?.allergies);
+
+      await client.query('DELETE FROM allergy_flags WHERE prescription_id = $1', [
+        medicine.prescription_id,
+      ]);
+
+      for (const flag of allergyFlags) {
+        await client.query(
+          `INSERT INTO allergy_flags (id, prescription_id, medicine_name, allergy_text)
+           VALUES ($1, $2, $3, $4)`,
+          [uuidv4(), medicine.prescription_id, flag.medicine_name, flag.allergy_text]
+        );
+      }
+
       await client.query('COMMIT');
     } catch (dbErr) {
       await client.query('ROLLBACK');
@@ -137,6 +158,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
       changed_fields: changedFields,
       explanation_cleared: explanationIsStale,
       interaction_warnings: interactionFlags,
+      allergy_warnings: allergyFlags,
     });
   } catch (err) {
     console.error('Medicine correction error:', err);

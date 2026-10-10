@@ -60,16 +60,21 @@ router.get('/', verifyToken, async (req, res) => {
     // Batch-fetch all related rows to avoid per-prescription queries
     let medicinesResult = { rows: [] };
     let flagsResult = { rows: [] };
+    let allergyFlagsResult = { rows: [] };
 
     if (prescriptionIds.length > 0) {
       const placeholders = prescriptionIds.map(() => '?').join(', ');
-      [medicinesResult, flagsResult] = await Promise.all([
+      [medicinesResult, flagsResult, allergyFlagsResult] = await Promise.all([
         pool.query(
           `SELECT * FROM medicines WHERE prescription_id IN (${placeholders}) ORDER BY created_at`,
           prescriptionIds
         ),
         pool.query(
           `SELECT * FROM interaction_flags WHERE prescription_id IN (${placeholders})`,
+          prescriptionIds
+        ),
+        pool.query(
+          `SELECT * FROM allergy_flags WHERE prescription_id IN (${placeholders})`,
           prescriptionIds
         ),
       ]);
@@ -89,6 +94,13 @@ router.get('/', verifyToken, async (req, res) => {
       flagsByPrescription.set(flag.prescription_id, flags);
     }
 
+    const allergyFlagsByPrescription = new Map();
+    for (const flag of allergyFlagsResult.rows) {
+      const flags = allergyFlagsByPrescription.get(flag.prescription_id) || [];
+      flags.push(flag);
+      allergyFlagsByPrescription.set(flag.prescription_id, flags);
+    }
+
     const result = prescriptions.map((prescription) => ({
       id: prescription.id,
       image_url: prescription.image_url,
@@ -96,6 +108,7 @@ router.get('/', verifyToken, async (req, res) => {
       uploaded_at: prescription.uploaded_at,
       medicines: medicinesByPrescription.get(prescription.id) || [],
       interaction_warnings: flagsByPrescription.get(prescription.id) || [],
+      allergy_warnings: allergyFlagsByPrescription.get(prescription.id) || [],
     }));
 
     const crossWarnings = checkCrossPrescriptionInteractions(result);

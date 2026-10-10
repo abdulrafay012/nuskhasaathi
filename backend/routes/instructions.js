@@ -59,6 +59,65 @@ function checkInteractions(medicines) {
   return flags;
 }
 
+// Splits the patient's free-text allergy field into individual entries.
+// Very short fragments are dropped: a stray "a" would otherwise match almost
+// every medicine name and bury the real warnings in noise.
+function parseAllergies(allergiesText) {
+  if (!allergiesText || typeof allergiesText !== 'string') return [];
+
+  const seen = new Set();
+  const entries = [];
+
+  for (const part of allergiesText.split(',')) {
+    const entry = part.trim();
+    if (entry.length < 3) continue;
+    const key = entry.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    entries.push(entry);
+  }
+
+  return entries;
+}
+
+// Compares each medicine against what the patient said they react to.
+//
+// This is a deliberately simple case-insensitive substring match in both
+// directions — "Penicillin V" matches an allergy to "penicillin", and a
+// medicine "Aspirin" matches an allergy recorded as "aspirin and NSAIDs". It is
+// NOT a clinical allergy database: it knows nothing about drug classes or
+// cross-reactivity, and the UI says so plainly so it is never mistaken for one.
+function checkAllergies(medicines, allergiesText) {
+  const allergies = parseAllergies(allergiesText);
+  if (allergies.length === 0) return [];
+
+  const flags = [];
+  const seen = new Set();
+
+  for (const medicine of medicines) {
+    const name = (medicine?.name || '').trim();
+    if (!name) continue;
+    const haystack = name.toLowerCase();
+
+    for (const allergy of allergies) {
+      const needle = allergy.toLowerCase();
+      if (!haystack.includes(needle) && !needle.includes(haystack)) continue;
+
+      const key = `${haystack}|${needle}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      flags.push({
+        medicine_name: name,
+        allergy_text: allergy,
+        warning_text: `You told us you are allergic to "${allergy}". This prescription includes ${name}. Check with your doctor or pharmacist before taking it.`,
+      });
+    }
+  }
+
+  return flags;
+}
+
 // POST /instructions — Generate Urdu instructions + interaction check
 router.post('/', verifyToken, async (req, res) => {
   try {
@@ -92,6 +151,12 @@ router.post('/', verifyToken, async (req, res) => {
 
     // Check for drug interactions
     const interactionFlags = checkInteractions(medicines);
+
+    // Check the medicine list against what this patient told us they react to.
+    const allergyResult = await pool.query('SELECT allergies FROM users WHERE id = $1', [
+      req.user.id,
+    ]);
+    const allergyFlags = checkAllergies(medicines, allergyResult.rows[0]?.allergies);
 
     // Generate Urdu instructions via Qwen, or use demo data without an API key
     let instructions = {};
@@ -180,6 +245,17 @@ router.post('/', verifyToken, async (req, res) => {
         );
       }
 
+      // Rewritten rather than appended, so re-running this route (or updating
+      // the allergy list and running it again) never stacks duplicate warnings.
+      await client.query('DELETE FROM allergy_flags WHERE prescription_id = $1', [prescription_id]);
+      for (const flag of allergyFlags) {
+        await client.query(
+          `INSERT INTO allergy_flags (id, prescription_id, medicine_name, allergy_text)
+           VALUES ($1, $2, $3, $4)`,
+          [uuidv4(), prescription_id, flag.medicine_name, flag.allergy_text]
+        );
+      }
+
       for (const medicine of medicines) {
         const explanation =
           instructions[medicine.name] || instructions[medicine.name.toLowerCase()] || null;
@@ -206,6 +282,7 @@ router.post('/', verifyToken, async (req, res) => {
       prescription_id,
       medicines: updatedMedicines,
       interaction_warnings: interactionFlags,
+      allergy_warnings: allergyFlags,
     });
   } catch (err) {
     console.error('Instructions error:', err);
@@ -747,5 +824,7 @@ Respond in JSON format:
 
 module.exports = router;
 module.exports.checkInteractions = checkInteractions;
+module.exports.checkAllergies = checkAllergies;
+module.exports.parseAllergies = parseAllergies;
 module.exports.checkCrossPrescriptionInteractions = checkCrossPrescriptionInteractions;
 module.exports.KNOWN_INTERACTIONS = KNOWN_INTERACTIONS;

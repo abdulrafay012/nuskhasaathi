@@ -7,6 +7,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import ScheduleView from './pages/ScheduleView';
+import Profile from './pages/Profile';
 import History from './pages/History';
 import CaregiverView from './pages/CaregiverView';
 import Navbar from './components/Navbar';
@@ -69,6 +70,7 @@ function App() {
             path="/schedule"
             element={user ? <ScheduleView /> : <Navigate to="/login" />}
           />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
           <Route
             path="/history"
             element={user ? <History user={user} /> : <Navigate to="/login" />}

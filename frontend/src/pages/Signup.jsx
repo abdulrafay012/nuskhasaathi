@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { signup } from '../api';
 
 export default function Signup({ onLogin }) {
-  const [form, setForm] = useState({ name: '', email: '', password: '', age: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', age: '', allergies: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,6 +18,7 @@ export default function Signup({ onLogin }) {
         email: form.email,
         password: form.password,
         age: form.age ? parseInt(form.age) : null,
+        allergies: form.allergies,
       });
       onLogin(res.data.user, res.data.token);
     } catch (err) {
@@ -93,6 +94,23 @@ export default function Signup({ onLogin }) {
               min="1"
               max="150"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Allergies (optional)
+            </label>
+            <input
+              type="text"
+              value={form.allergies}
+              onChange={(e) => setForm({ ...form, allergies: e.target.value })}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
+              placeholder="e.g. penicillin, aspirin"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Separate with commas. We will flag these on your prescriptions — it is a simple name
+              match, not a full clinical allergy check.
+            </p>
           </div>
 
           <button

@@ -47,9 +47,13 @@ export default function Navbar({ user, onLogout }) {
               <span>👨‍👩‍👧</span>
               <span className="hidden sm:inline">Family Share</span>
             </button>
-            <span className="hidden md:inline text-sm text-gray-500">
+            <Link
+              to="/profile"
+              className="hidden md:inline text-sm text-gray-500 hover:text-primary-dark transition"
+              title="Profile and allergies"
+            >
               {user?.name}
-            </span>
+            </Link>
             <button
               onClick={handleLogout}
               className="text-xs sm:text-sm bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition"

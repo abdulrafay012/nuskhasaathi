@@ -36,6 +36,16 @@ const initDB = () => {
       warning_text TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`,
+    // Kept separate from interaction_flags: an allergy warning comes from what
+    // the patient told us about themselves, not from the drug-pair table, and
+    // the UI has to present the two differently.
+    `CREATE TABLE IF NOT EXISTS allergy_flags (
+      id TEXT PRIMARY KEY,
+      prescription_id TEXT REFERENCES prescriptions(id),
+      medicine_name TEXT,
+      allergy_text TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`,
   ];
 
   try {
@@ -62,6 +72,11 @@ const initDB = () => {
 
     if (!columnNames.includes('caregiver_token')) {
       pool.query('ALTER TABLE users ADD COLUMN caregiver_token TEXT');
+    }
+
+    // Free text, comma-separated, entered by the patient ("penicillin, aspirin").
+    if (!columnNames.includes('allergies')) {
+      pool.query('ALTER TABLE users ADD COLUMN allergies TEXT');
     }
     pool.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_caregiver_token ON users(caregiver_token)');
 
