@@ -7,6 +7,7 @@ import {
   downloadReport,
   getCrossInteractions,
   getCaregiverToken,
+  getHistory,
 } from '../api';
 import MedicineCard from '../components/MedicineCard';
 import InteractionBanner from '../components/InteractionBanner';
@@ -53,9 +54,28 @@ export default function Dashboard({ user }) {
   const [triageOpen, setTriageOpen] = useState(false);
   const [crossWarnings, setCrossWarnings] = useState([]);
   const [caregiverToken, setCaregiverToken] = useState('');
+  const [dragActive, setDragActive] = useState(false);
+  const [sampleLoading, setSampleLoading] = useState(false);
+  const [overview, setOverview] = useState(null);
   const fileRef = useRef(null);
+  const selectedFileRef = useRef(null);
   const readingSessionRef = useRef(0);
   const previewUrlRef = useRef(null);
+
+  // Real numbers for the at-a-glance panel, refreshed whenever the patient
+  // comes back to the upload screen.
+  useEffect(() => {
+    if (step !== 'idle') return;
+    getHistory()
+      .then((res) => {
+        const list = res.data.prescriptions || [];
+        setOverview({
+          count: list.length,
+          latest: list[0] || null,
+        });
+      })
+      .catch(() => setOverview(null));
+  }, [step]);
 
   useEffect(() => {
     getCrossInteractions()
@@ -91,21 +111,48 @@ export default function Dashboard({ user }) {
     };
   }, [voiceLang]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (previewUrlRef.current) {
-        URL.revokeObjectURL(previewUrlRef.current);
-      }
-      const nextUrl = URL.createObjectURL(file);
-      previewUrlRef.current = nextUrl;
-      setPreview(nextUrl);
-      setError('');
+  // One entry point for every way a photo arrives: the file picker, a
+  // drag-and-drop, or the bundled sample prescription.
+  const selectFile = (file) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please choose an image file (JPG, PNG or WebP).');
+      return;
+    }
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
+    const nextUrl = URL.createObjectURL(file);
+    previewUrlRef.current = nextUrl;
+    selectedFileRef.current = file;
+    setPreview(nextUrl);
+    setError('');
+  };
+
+  const handleFileChange = (e) => selectFile(e.target.files[0]);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    selectFile(e.dataTransfer.files[0]);
+  };
+
+  const loadSamplePrescription = async () => {
+    setSampleLoading(true);
+    try {
+      const res = await fetch('/test-assets/prescription-sample-1.png');
+      if (!res.ok) throw new Error('Sample not available');
+      const blob = await res.blob();
+      selectFile(new File([blob], 'sample-prescription.png', { type: 'image/png' }));
+    } catch {
+      setError('Could not load the sample prescription. Please upload your own photo.');
+    } finally {
+      setSampleLoading(false);
     }
   };
 
   const processPrescription = async () => {
-    const file = fileRef.current?.files[0];
+    const file = selectedFileRef.current;
     if (!file) {
       setError('Please select a prescription image first.');
       return;
@@ -268,71 +315,258 @@ export default function Dashboard({ user }) {
       previewUrlRef.current = null;
     }
     setPreview(null);
+    selectedFileRef.current = null;
     if (fileRef.current) fileRef.current.value = '';
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className={`${step === 'idle' ? 'max-w-6xl' : 'max-w-4xl'} mx-auto px-4 py-8`}>
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Upload Your Prescription
-        </h1>
-        <p className="text-gray-500 mt-2">
-          Take a photo or upload an image of your prescription to get clear medicine instructions in Urdu.
-        </p>
-        <p className="text-xs text-gray-400 mt-1 italic">
-          This tool explains your existing prescription — it does not replace your doctor's advice.
-        </p>
-      </div>
+      {step === 'idle' ? (
+        <div className="mb-8">
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+            Assalam-o-Alaikum{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
+          </p>
+          <h1 className="mt-1 text-3xl font-bold text-gray-800 sm:text-4xl">
+            Understand your prescription
+          </h1>
+          <p className="mt-2 max-w-2xl text-gray-500">
+            Upload a photo of a handwritten prescription. We read it, list each medicine with its dose,
+            and explain it aloud in simple Urdu.
+          </p>
+        </div>
+      ) : (
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Upload Your Prescription
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Take a photo or upload an image of your prescription to get clear medicine instructions in Urdu.
+          </p>
+          <p className="text-xs text-gray-400 mt-1 italic">
+            This tool explains your existing prescription — it does not replace your doctor's advice.
+          </p>
+        </div>
+      )}
 
       {/* Upload Section */}
       {step === 'idle' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-teal-100 p-8">
-          <div className="border-2 border-dashed border-teal-200 rounded-xl p-8 text-center">
-            {preview ? (
-              <div className="mb-4">
-                <img
-                  src={preview}
-                  alt="Prescription preview"
-                  className="max-h-64 mx-auto rounded-lg shadow-sm"
-                />
-              </div>
-            ) : (
-              <div className="mb-4">
-                <span className="text-5xl">📷</span>
-                <p className="text-gray-500 mt-2">Upload a photo of your handwritten prescription</p>
-              </div>
-            )}
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Upload card */}
+            <div className="rounded-2xl border border-teal-100 bg-white p-6 shadow-sm sm:p-8 lg:col-span-2">
+              <input
+                type="file"
+                ref={fileRef}
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileChange}
+                className="hidden"
+                id="file-upload"
+              />
 
-            <input
-              type="file"
-              ref={fileRef}
-              accept="image/*"
-              capture="environment"
-              onChange={handleFileChange}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="inline-block bg-teal-50 text-primary-dark px-6 py-2.5 rounded-lg font-medium cursor-pointer hover:bg-teal-100 transition mr-3"
-            >
-              {preview ? 'Change Image' : 'Choose Image'}
-            </label>
+              {preview ? (
+                <div className="rounded-xl border border-teal-100 bg-teal-50/40 p-4 sm:p-6">
+                  <img
+                    src={preview}
+                    alt="Prescription preview"
+                    className="mx-auto max-h-72 rounded-lg shadow-sm"
+                  />
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700">
+                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clipRule="evenodd" />
+                      </svg>
+                      Photo ready
+                    </span>
+                    <label
+                      htmlFor="file-upload"
+                      className="cursor-pointer text-sm font-medium text-primary-dark underline-offset-2 hover:underline"
+                    >
+                      Choose a different photo
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <label
+                  htmlFor="file-upload"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragActive(true);
+                  }}
+                  onDragLeave={() => setDragActive(false)}
+                  onDrop={handleDrop}
+                  className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-12 text-center transition ${
+                    dragActive
+                      ? 'border-primary bg-teal-50'
+                      : 'border-teal-200 hover:border-primary hover:bg-teal-50/50'
+                  }`}
+                >
+                  <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-50 text-primary">
+                    <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8.5A2.5 2.5 0 015.5 6h1.7l1.3-2h7l1.3 2h1.7A2.5 2.5 0 0121 8.5v9a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 17.5v-9z" />
+                      <circle cx="12" cy="13" r="3.5" />
+                    </svg>
+                  </span>
+                  <span className="mt-4 text-lg font-semibold text-gray-800">
+                    Take a photo or drop your prescription here
+                  </span>
+                  <span className="mt-1 text-sm text-gray-500">
+                    On a phone this opens the camera. JPG, PNG or WebP, up to 10 MB.
+                  </span>
+                  <span className="mt-5 inline-block rounded-lg bg-primary px-6 py-2.5 font-medium text-white shadow-sm transition hover:bg-primary-dark">
+                    Choose Image
+                  </span>
+                </label>
+              )}
+
+              {!preview && (
+                <p className="mt-4 text-center text-sm text-gray-500">
+                  No prescription handy?{' '}
+                  <button
+                    type="button"
+                    onClick={loadSamplePrescription}
+                    disabled={sampleLoading}
+                    className="font-medium text-primary-dark underline-offset-2 hover:underline disabled:opacity-50"
+                  >
+                    {sampleLoading ? 'Loading sample…' : 'Try a sample prescription'}
+                  </button>
+                </p>
+              )}
+
+              {error && (
+                <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
+              )}
+
+              <button
+                onClick={processPrescription}
+                disabled={!preview}
+                className="mt-6 w-full rounded-xl bg-primary py-3 text-lg font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Process Prescription
+              </button>
+
+              <ul className="mt-5 grid gap-2 text-sm text-gray-500 sm:grid-cols-3">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  Use good light, no shadows
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  Keep the whole page in frame
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  Lay the paper flat
+                </li>
+              </ul>
+            </div>
+
+            {/* At a glance */}
+            <aside className="flex flex-col gap-4">
+              <div className="rounded-2xl border border-teal-100 bg-white p-6 shadow-sm">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+                  Your prescriptions
+                </h2>
+                {overview ? (
+                  <>
+                    <p className="mt-3 text-4xl font-bold tabular-nums text-gray-800">
+                      {overview.count}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {overview.count === 1 ? 'prescription saved' : 'prescriptions saved'}
+                    </p>
+                    {overview.latest && (
+                      <p className="mt-3 border-t border-gray-100 pt-3 text-sm text-gray-600">
+                        Latest:{' '}
+                        <span className="font-medium text-gray-800">
+                          {(overview.latest.medicines || []).length} medicine
+                          {(overview.latest.medicines || []).length === 1 ? '' : 's'}
+                        </span>{' '}
+                        on{' '}
+                        {new Date(`${overview.latest.uploaded_at.replace(' ', 'T')}Z`).toLocaleDateString(undefined, {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="mt-3 text-sm text-gray-500">Your saved prescriptions will appear here.</p>
+                )}
+              </div>
+
+              <div
+                className={`rounded-2xl border p-5 ${
+                  crossWarnings.length > 0
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-green-200 bg-green-50'
+                }`}
+              >
+                <p className={`font-semibold ${crossWarnings.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
+                  {crossWarnings.length > 0
+                    ? `${crossWarnings.length} medicine interaction${crossWarnings.length === 1 ? '' : 's'} found`
+                    : 'No known interactions'}
+                </p>
+                <p className={`mt-1 text-sm ${crossWarnings.length > 0 ? 'text-red-600' : 'text-green-700/80'}`}>
+                  {crossWarnings.length > 0
+                    ? 'Across your saved prescriptions. Check with your doctor or pharmacist.'
+                    : 'Checked across all your saved prescriptions.'}
+                </p>
+              </div>
+
+              <nav className="grid grid-cols-3 gap-3 lg:grid-cols-1" aria-label="Quick links">
+                <Link
+                  to="/schedule"
+                  className="flex flex-col items-start rounded-xl border border-teal-100 bg-white p-4 text-left text-sm font-medium text-gray-700 shadow-sm transition hover:border-primary hover:text-primary-dark"
+                >
+                  Today’s schedule
+                  <span className="mt-0.5 hidden text-xs font-normal text-gray-500 lg:block">What to take, and when</span>
+                </Link>
+                <Link
+                  to="/history"
+                  className="flex flex-col items-start rounded-xl border border-teal-100 bg-white p-4 text-left text-sm font-medium text-gray-700 shadow-sm transition hover:border-primary hover:text-primary-dark"
+                >
+                  History
+                  <span className="mt-0.5 hidden text-xs font-normal text-gray-500 lg:block">Re-hear any past prescription</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setShareModalOpen(true)}
+                  className="flex flex-col items-start rounded-xl border border-teal-100 bg-white p-4 text-left text-sm font-medium text-gray-700 shadow-sm transition hover:border-primary hover:text-primary-dark"
+                >
+                  Family share
+                  <span className="mt-0.5 hidden text-xs font-normal text-gray-500 lg:block">Let family follow your doses</span>
+                </button>
+              </nav>
+            </aside>
           </div>
 
-          {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg mt-4 text-sm">{error}</div>
-          )}
-
-          <button
-            onClick={processPrescription}
-            disabled={!preview}
-            className="w-full mt-6 bg-primary text-white py-3 rounded-xl font-semibold text-lg hover:bg-primary-dark transition disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Process Prescription
-          </button>
+          {/* How it works */}
+          <section className="rounded-2xl border border-teal-100 bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="text-lg font-semibold text-gray-800">How it works</h2>
+            <ol className="mt-5 grid gap-6 sm:grid-cols-3">
+              {[
+                ['Photograph', 'Take a clear photo of the prescription your doctor gave you.'],
+                ['We read it', 'AI reads the handwriting and lists each medicine with its dose and timing.'],
+                ['Listen in Urdu', 'Hear what each medicine is for and when to take it, with safety warnings.'],
+              ].map(([title, text], i) => (
+                <li key={title} className="flex gap-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 font-bold text-primary-dark">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-gray-800">{title}</p>
+                    <p className="mt-1 text-sm text-gray-500">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-6 border-t border-gray-100 pt-4 text-xs italic text-gray-400">
+              NuskhaSaathi explains your existing prescription. It does not diagnose or replace your doctor's advice.
+            </p>
+          </section>
         </div>
       )}
 

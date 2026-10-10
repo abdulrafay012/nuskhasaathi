@@ -29,7 +29,7 @@ export default function Signup({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md border border-teal-100">
         <div className="text-center mb-8">
           <span className="text-4xl">💊</span>

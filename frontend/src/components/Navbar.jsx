@@ -17,7 +17,7 @@ export default function Navbar({ user, onLogout }) {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
             <span className="text-2xl">💊</span>
-            <span className="text-xl font-bold text-primary-dark">NuskhaSaathi</span>
+            <span className="hidden text-xl font-bold text-primary-dark sm:inline">NuskhaSaathi</span>
           </Link>
 
           <div className="flex items-center gap-3 sm:gap-4">
