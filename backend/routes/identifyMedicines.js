@@ -8,6 +8,7 @@ const router = express.Router();
 const DASHSCOPE_BASE_URL = (
   process.env.DASHSCOPE_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1'
 ).replace(/\/+$/, '');
+const TEXT_MODEL = process.env.TEXT_MODEL || 'qwen-plus';
 
 // POST /identify-medicines — Structure OCR text into medicine list
 router.post('/', verifyToken, async (req, res) => {
@@ -79,7 +80,7 @@ router.post('/', verifyToken, async (req, res) => {
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: 'qwen-plus',
+              model: TEXT_MODEL,
               messages: [
                 {
                   role: 'system',

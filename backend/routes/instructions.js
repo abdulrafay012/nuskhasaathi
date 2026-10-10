@@ -8,6 +8,7 @@ const router = express.Router();
 const DASHSCOPE_BASE_URL = (
   process.env.DASHSCOPE_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1'
 ).replace(/\/+$/, '');
+const TEXT_MODEL = process.env.TEXT_MODEL || 'qwen-plus';
 
 // Hardcoded interaction reference table (small, accurate, well-known dangerous pairs)
 const KNOWN_INTERACTIONS = [
@@ -195,7 +196,7 @@ router.post('/', verifyToken, async (req, res) => {
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: 'qwen-plus',
+              model: TEXT_MODEL,
               messages: [
                 {
                   role: 'system',
@@ -422,7 +423,7 @@ Never change doses or prescribe new drugs. Always urge caution.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen-plus',
+        model: TEXT_MODEL,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: question.trim() },
@@ -539,7 +540,7 @@ Match this description to ONE of the medicines in the prescription. Answer in JS
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen-plus',
+        model: TEXT_MODEL,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: "What pill is this?" },
@@ -619,7 +620,7 @@ Answer in JSON:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen-plus',
+        model: TEXT_MODEL,
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: "Generate my diet plan." }],
         temperature: 0.5,
       }),
@@ -711,7 +712,7 @@ Respond in JSON format:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen-plus',
+        model: TEXT_MODEL,
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: "Find cheaper alternatives." }],
         temperature: 0.3,
       }),
@@ -797,7 +798,7 @@ Respond in JSON format:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'qwen-plus',
+        model: TEXT_MODEL,
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: "Triage my symptom." }],
         temperature: 0.2,
       }),

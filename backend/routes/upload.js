@@ -11,6 +11,7 @@ const router = express.Router();
 const DASHSCOPE_BASE_URL = (
   process.env.DASHSCOPE_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1'
 ).replace(/\/+$/, '');
+const OCR_MODEL = process.env.OCR_MODEL || 'qwen-vl-plus';
 
 // Multer config for local uploads (fallback when OSS not configured)
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -80,7 +81,7 @@ Review after one week.`;
             },
             signal: controller.signal,
             body: JSON.stringify({
-              model: 'qwen-vl-plus',
+              model: OCR_MODEL,
               messages: [
                 {
                   role: 'system',
