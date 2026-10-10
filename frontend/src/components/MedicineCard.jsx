@@ -80,15 +80,15 @@ export default function MedicineCard({ medicine, voiceLang, speaking, onSpeak, o
             )}
           </div>
 
-          <div className="flex flex-wrap gap-3 text-sm text-gray-500 mb-3">
+          <div className="flex flex-wrap gap-2 text-sm text-gray-600 mb-3">
             {medicine.dosage && (
-              <span className="bg-gray-100 px-2 py-1 rounded">Dosage: {medicine.dosage}</span>
+              <span className="rounded-md border border-gray-100 bg-gray-50 px-2.5 py-1">Dosage: {medicine.dosage}</span>
             )}
             {medicine.frequency && (
-              <span className="bg-gray-100 px-2 py-1 rounded">Frequency: {medicine.frequency}</span>
+              <span className="rounded-md border border-gray-100 bg-gray-50 px-2.5 py-1">Frequency: {medicine.frequency}</span>
             )}
             {medicine.duration && (
-              <span className="bg-gray-100 px-2 py-1 rounded">Duration: {medicine.duration}</span>
+              <span className="rounded-md border border-gray-100 bg-gray-50 px-2.5 py-1">Duration: {medicine.duration}</span>
             )}
           </div>
 
